@@ -1,0 +1,11 @@
+{
+  "name": "looymemo",
+  "version": "0.1.0",
+  "main": "main.js",
+  "description": "에버노트 쪼개기",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "LoopyWayne",
+  "license": "ISC"
+}
