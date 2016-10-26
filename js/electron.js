@@ -4,13 +4,13 @@ $(document).ready(function(){
     console.log('f1');
   }, 'keyup');
 
+  /*
   Mousetrap.bind('ctrl+s', function() {
     $('#myModal').modal('show');
   }, 'keyup');
+  */
 
-
-  //저장
-  //modal event init
+  //저장, modal event init
   $("#save").on("click",function(){
     var fileName = $("#fileName").val()
     $("#fileName").val('')
@@ -26,10 +26,10 @@ $(document).ready(function(){
   //불러오기
   $(".nav.nav-tabs .list").on("click",function(){
     //파일 경로 파일들 가져오기
+    $('#myModal2').modal('show');
 
     fs.readdir(filePath,function(err,files){
         if(err)throw err;
-
         if(files.length>0){
           $(".list-group").html("")
           for(file in files){
@@ -37,9 +37,15 @@ $(document).ready(function(){
             $(".list-group").append(tag)
           }
         }else{
-
+          $(".list-group").html("")
+          let tag = '<li class="list-group-item list-group-item-danger">저장된 파일 없음</li>'
+          $(".list-group").append(tag)
         }
     })
-
   })//불러오기
+
+  $(".list-group").on("click", ".list-group-item", function(event){
+    console.log($(event.target).text())
+    $('#myModal2').modal('hide');
+  })
 })//function end

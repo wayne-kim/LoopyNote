@@ -18,6 +18,7 @@ $(document).ready(function(){
     $(".body").hide()
     $(".body."+classNames[1]).show()
   });
+  
   //tab quit init
   $("#btnQuit").on("click",function(){
     app.quit()

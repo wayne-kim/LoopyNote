@@ -5,7 +5,7 @@ let win
 
 function createWindow () {
   //win = new BrowserWindow({frame: false})
-  win = new BrowserWindow({width:1000,hight:1000,transparent: true, frame: false})
+  win = new BrowserWindow({transparent: true, frame: false})
 
   win.loadURL(`file://${__dirname}/index.html`)
   win.on('closed', () => {

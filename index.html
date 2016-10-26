@@ -8,11 +8,14 @@
   <!--/CSS-->
 
   <style>
+  body {
+    border : 1px solid #337ab7;
+  }
   p{
     margin : 0 0 0 0px;
   }
   div{
-    maring : 0 0 0 0px;
+    margig : 0 0 0 0px;
   }
   div.container-fluid{
     padding: 0 0 0 0px;
@@ -21,7 +24,13 @@
     margin: 0 0 0 0px;
   }
   .editable{
-    height: 450px;
+    height: 475px;
+  }
+  .editable{
+    margin-top: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-bottom: 20px;
   }
   </style>
 
@@ -60,8 +69,12 @@
         align: 'center',
         sticky: false,
         updateOnEmptySelection: false
-      },
-      staticToolbar: true
+      }
+    });
+
+    $(window).keypress(function(event) {
+      if (!(event.which == 115 && event.ctrlKey) && !(event.which == 19)) return true;
+      $('#myModal').modal('show');
     });
   });
   </script>
@@ -75,59 +88,84 @@
       <ul class="nav nav-tabs">
         <li role="presentation" class="tab memo active"><a href="#">메모하기</a></li>
         <li role="presentation" class="save" data-toggle="modal" data-target="#myModal"><a href="#">저장</a></li>
-        <li role="presentation" class="tab list"><a href="#">불러오기</a></li>
-        <!--
-        <li role="presentation" class="tab record-video"><a href="#">녹화</a></li>
-        <li role="presentation" class="tab record-sound"><a href="#">녹음</a></li>
-        <li role="presentation" class="tab record-sound"><a href="#">첨부</a></li>
-        <li role="presentation" class="tab envi"><a href="#">환경설정</a></li>
-      -->
-      <li role="presentation" class="tab help"><a href="#">도움말</a></li>
-      <li role="presentation" id="btnQuit"><a href="#">종료</a></li>
-    </ul>
-  </div>
+        <li role="presentation" class="list"><a href="#">불러오기</a></li>
+        <li role="presentation" class="record"><a href="#">녹화</a></li>
+        <li role="presentation" class="help" data-toggle="modal" data-target="#myModal3"><a href="#">도움말</a></li>
+        <li role="presentation" id="btnQuit"><a href="#">종료</a></li>
+      </ul>
+    </div>
 
-  <div class = "body memo">
-    <div class="editable"></div>
-  </div>
+    <div class = "body memo">
+      <div class="editable"></div>
+    </div>
 
-  <div class = "body list">
-    <ul class="list-group">
-    </ul>
-  </div>
-
-  <div class = "body help">
-    <h1>도움말</h1>
-    <p>상업적 사용금지</p>
-    <h1>개발자</h1>
-    <p>김은찬</p>
-    <p>경성대학교 데이터베이스 연구실</p>
-    <p>sumel014@naver.com</p>
-  </div>
-
-  <!-- Modal -->
-  <div class="modal fade" id="myModal" role="dialog">
-    <div class="modal-dialog">
-
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header ">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">파일이름 입력</h4>
-        </div>
-        <div class="modal-body">
-          <div class="form-group">
-            <input type="text" class="form-control" id="fileName">
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" role="dialog">
+      <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header ">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">파일이름 입력</h4>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <input type="text" class="form-control" id="fileName">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-success" data-dismiss="modal" id="save">저장</button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal">취소</button>
           </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-success" data-dismiss="modal" id="save">저장</button>
-          <button type="button" class="btn btn-danger" data-dismiss="modal">취소</button>
+      </div>
+    </div><!-- Modal -->
+
+    <!-- Modal2 -->
+    <div class="modal fade" id="myModal2" role="dialog">
+      <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header ">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">파일 불러오기</h4>
+          </div>
+          <div class="modal-body">
+            <ul class="list-group">
+            </ul>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">나가기</button>
+          </div>
         </div>
       </div>
-    </div>
-  </div><!-- Modal -->
+    </div><!-- Modal -->
 
-</div><!--container-fluid -->
+    <!-- Modal3 -->
+    <div class="modal fade" id="myModal3" role="dialog">
+      <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header ">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">도움말</h4>
+          </div>
+          <div class="modal-body">
+            <h1>도움말</h1>
+            <p>스마트 키</p>
+            <p>...</p>
+            <h1>개발자</h1>
+            <p>김은찬</p>
+            <p>경성대학교 데이터베이스 연구실</p>
+            <p>sumel014@naver.com</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">나가기</button>
+          </div>
+        </div>
+      </div>
+    </div><!-- Modal -->
+
+  </div><!--container-fluid -->
 </body>
 </html>
