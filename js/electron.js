@@ -46,6 +46,11 @@ $(document).ready(function(){
 
   $(".list-group").on("click", ".list-group-item", function(event){
     console.log($(event.target).text())
+    var contents = fs.readFileSync(filePath+"/"+$(event.target).text(), {
+      encoding : "utf-8",
+      flag : "r"
+    })
+    $(".editable").append(contents)
     $('#myModal2').modal('hide');
   })
 })//function end
