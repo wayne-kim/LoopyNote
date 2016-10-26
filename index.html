@@ -21,13 +21,14 @@
     margin: 0 0 0 0px;
   }
   .editable{
-    height: 488px;
+    height: 450px;
   }
   </style>
 
   <!--라이브러리-->
   <script src="bower_components/jquery/dist/jquery.min.js" onload="window.$ = window.jQuery = module.exports;"></script>
   <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script src="bower_components/holderjs/holder.js"></script>
   <script src="js/mousetrap.min.js"></script>
 
   <!-- 에디터 -->
@@ -36,53 +37,32 @@
   <script src="bower_components/medium-editor/dist/js/medium-editor.js"></script>
   <!--/에디터 -->
 
-  <script src="js/controller.js"></script>
+  <script src="js/init.js"></script>
+  <script src="js/electron.js"></script>
+
   <script type="text/javascript">
+  var electron = null;
   $(document).ready(function(){
     var editor = new MediumEditor('.editable',{
       toolbar: {
-        buttons: [
-          'bold',
-          'italic',
-          {
-            name: 'h1',
-            action: 'append-h2',
-            aria: 'header type 1',
-            tagNames: ['h2'],
-            contentDefault: '<b>H1</b>',
-            classList: ['custom-class-h1'],
-            attrs: {
-              'data-custom-attr': 'attr-value-h1'
-            }
-          },
-          {
-            name: 'h2',
-            action: 'append-h3',
-            aria: 'header type 2',
-            tagNames: ['h3'],
-            contentDefault: '<b>H2</b>',
-            classList: ['custom-class-h2'],
-            attrs: {
-              'data-custom-attr': 'attr-value-h2'
-            }
-          },
-          'justifyLeft',
-          'justifyCenter',
-          'justifyRight',
-          'quote',
-          'anchor'
-        ]
-      }
+        /* These are the default options for the toolbar,
+        if nothing is passed this is what is used */
+        allowMultiParagraphSelection: true,
+        buttons: ['bold', 'italic', 'underline', 'anchor', 'h2', 'h3', 'quote'],
+        diffLeft: 0,
+        diffTop: -10,
+        firstButtonClass: 'medium-editor-button-first',
+        lastButtonClass: 'medium-editor-button-last',
+        relativeContainer: null,
+        standardizeSelectionStart: false,
+        static: false,
+        /* options which only apply when static is true */
+        align: 'center',
+        sticky: false,
+        updateOnEmptySelection: false
+      },
+      staticToolbar: true
     });
-
-    electron = require('electron')
-    $("#btnQuit").on("click",function(){
-      electron.remote.app.quit()
-    })
-
-    Mousetrap.bind('f1', function() {
-      console.log('f1');
-    }, 'keyup');
   });
   </script>
 </head>
@@ -94,43 +74,60 @@
       </div>
       <ul class="nav nav-tabs">
         <li role="presentation" class="tab memo active"><a href="#">메모하기</a></li>
-        <li role="presentation" class="tab list"><a href="#">리스트</a></li>
+        <li role="presentation" class="save" data-toggle="modal" data-target="#myModal"><a href="#">저장</a></li>
+        <li role="presentation" class="tab list"><a href="#">불러오기</a></li>
+        <!--
         <li role="presentation" class="tab record-video"><a href="#">녹화</a></li>
         <li role="presentation" class="tab record-sound"><a href="#">녹음</a></li>
+        <li role="presentation" class="tab record-sound"><a href="#">첨부</a></li>
         <li role="presentation" class="tab envi"><a href="#">환경설정</a></li>
-        <li role="presentation" class="tab help"><a href="#">도움말</a></li>
+      -->
+      <li role="presentation" class="tab help"><a href="#">도움말</a></li>
+      <li role="presentation" id="btnQuit"><a href="#">종료</a></li>
+    </ul>
+  </div>
 
-        <li role="presentation"><a href="#">저장</a></li>
-        <li role="presentation" id="btnQuit"><a href="#">종료</a></li>
-      </ul>
-      <div class = "panel-body memo">
-        <div class="editable"></div>
-      </div>
-      <div class = "panel-body list">
-        <h1>리스트</h1>
-        <p>준비중</p>
-      </div>
-      <div class = "panel-body record-video">
-        <h1>녹화</h1>
-        <p>준비중</p>
-      </div>
-      <div class = "panel-body record-sound">
-        <h1>녹음</h1>
-        <p>준비중</p>
-      </div>
-      <div class = "panel-body envi">
-        <h1>환경</h1>
-        <p>준비중</p>
-      </div>
-      <div class = "panel-body help">
-        <h1>도움말</h1>
-        <p>상업적 사용금지</p>
-        <h1>개발자</h1>
-        <p>김은찬</p>
-        <p>경성대학교 데이터베이스 연구실</p>
-        <p>sumel014@naver.com</p>
+  <div class = "body memo">
+    <div class="editable"></div>
+  </div>
+
+  <div class = "body list">
+    <ul class="list-group">
+    </ul>
+  </div>
+
+  <div class = "body help">
+    <h1>도움말</h1>
+    <p>상업적 사용금지</p>
+    <h1>개발자</h1>
+    <p>김은찬</p>
+    <p>경성대학교 데이터베이스 연구실</p>
+    <p>sumel014@naver.com</p>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header ">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">파일이름 입력</h4>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <input type="text" class="form-control" id="fileName">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success" data-dismiss="modal" id="save">저장</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">취소</button>
+        </div>
       </div>
     </div>
-  </div>
+  </div><!-- Modal -->
+
+</div><!--container-fluid -->
 </body>
 </html>
