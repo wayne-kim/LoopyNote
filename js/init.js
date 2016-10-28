@@ -163,6 +163,8 @@ $(document).ready(function(){
     var img = document.createElement('img');
     img.src = canvas.toDataURL('image/webp');
     $(".body.picture").append(img)
+    $(".glyphicon-chevron-left").removeAttr("disabled", true);
+
     $("img").hide()
     $("img").eq($("img").length-1).show()
     //document.querySelector('img').src = canvas.toDataURL('image/webp');
