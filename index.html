@@ -32,6 +32,19 @@
     margin-right: 20px;
     margin-bottom: 20px;
   }
+  .body.record,.body.picture {
+    height: 505px;
+  }
+  .box-record{
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+  }
+  video, img{
+    margin-left: 25px;
+  }
+
   </style>
 
   <!--라이브러리-->
@@ -47,7 +60,6 @@
   <!--/에디터 -->
 
   <script src="js/init.js"></script>
-  <script src="js/electron.js"></script>
 
   <script type="text/javascript">
   var electron = null;
@@ -57,7 +69,12 @@
         /* These are the default options for the toolbar,
         if nothing is passed this is what is used */
         allowMultiParagraphSelection: true,
-        buttons: ['bold', 'italic', 'underline', 'anchor', 'h2', 'h3', 'quote'],
+        buttons:
+          ['bold', 'underline', 'strikethrough','anchor','|',
+          'h1','h2', 'h3','|',
+          'justifyLeft','justifyCenter','justifyRight','pre','|',
+          'orderedlist','unorderedlist','indent','outdent']
+        ,
         diffLeft: 0,
         diffTop: -10,
         firstButtonClass: 'medium-editor-button-first',
@@ -70,11 +87,6 @@
         sticky: false,
         updateOnEmptySelection: false
       }
-    });
-
-    $(window).keypress(function(event) {
-      if (!(event.which == 115 && event.ctrlKey) && !(event.which == 19)) return true;
-      $('#myModal').modal('show');
     });
   });
   </script>
@@ -89,7 +101,8 @@
         <li role="presentation" class="tab memo active"><a href="#">메모하기</a></li>
         <li role="presentation" class="save" data-toggle="modal" data-target="#myModal"><a href="#">저장</a></li>
         <li role="presentation" class="list"><a href="#">불러오기</a></li>
-        <li role="presentation" class="record"><a href="#">녹화</a></li>
+        <li role="presentation" class="tab record"><a href="#">미디어</a></li>
+        <li role="presentation" class="tab picture"><a href="#">미디어 리스트</a></li>
         <li role="presentation" class="help" data-toggle="modal" data-target="#myModal3"><a href="#">도움말</a></li>
         <li role="presentation" id="btnQuit"><a href="#">종료</a></li>
       </ul>
@@ -98,6 +111,30 @@
     <div class = "body memo">
       <div class="editable"></div>
     </div>
+
+    <div class = "body record">
+      <div class="box-record">
+        <button type="button" class="btn btn-primary glyphicon glyphicon-camera"></button>
+
+        <button type="button" class="btn btn-primary glyphicon glyphicon-volume-up"></button>
+        <button type="button" class="btn btn-primary glyphicon glyphicon-volume-off"></button>
+
+        <button type="button" class="btn btn-primary glyphicon glyphicon-play"></button>
+        <button type="button" class="btn btn-primary glyphicon glyphicon-pause"></button>
+        <button type="button" class="btn btn-primary glyphicon glyphicon-stop"></button>
+      </div>
+      <video autoplay></video>
+    </div>
+
+    <div class = "body picture">
+      <div class="box-record">
+        <button type="button" class="btn btn-primary glyphicon glyphicon-chevron-left"></button>
+        <button type="button" class="btn btn-primary glyphicon glyphicon-chevron-right"></button>
+      </div>
+      <canvas width="750" height="440" style="display:none;"></canvas>
+      <!--<img src="">-->
+    </div>
+
 
     <!-- Modal -->
     <div class="modal fade" id="myModal" role="dialog">
