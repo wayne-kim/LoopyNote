@@ -32,7 +32,7 @@
     margin-right: 20px;
     margin-bottom: 20px;
   }
-  .body.record,.body.picture {
+  .body.record, .body.picture, .body.video {
     height: 505px;
   }
   .box-record{
@@ -103,7 +103,8 @@
         <li role="presentation" class="save" data-toggle="modal" data-target="#myModal"><a href="#">저장</a></li>
         <li role="presentation" class="list"><a href="#">불러오기</a></li>
         <li role="presentation" class="tab record"><a href="#">미디어</a></li>
-        <li role="presentation" class="tab picture"><a href="#">미디어 리스트</a></li>
+        <li role="presentation" class="tab picture"><a href="#">사진 리스트</a></li>
+        <li role="presentation" class="tab video"><a href="#">영상 리스트</a></li>
         <li role="presentation" class="help" data-toggle="modal" data-target="#myModal3"><a href="#">도움말</a></li>
         <li role="presentation" id="btnQuit"><a href="#">종료</a></li>
       </ul>
@@ -120,22 +121,28 @@
         <button type="button" class="btn btn-primary glyphicon glyphicon-volume-up"></button>
         <button type="button" class="btn btn-primary glyphicon glyphicon-volume-off"></button>
 
-        <button type="button" class="btn btn-primary glyphicon glyphicon-play"></button>
+        <button type="button" class="btn btn-primary glyphicon glyphicon-play start"></button>
+        <button type="button" class="btn btn-success glyphicon glyphicon-play resume"></button>
         <button type="button" class="btn btn-primary glyphicon glyphicon-pause"></button>
         <button type="button" class="btn btn-primary glyphicon glyphicon-stop"></button>
       </div>
       <video autoplay></video>
+      <canvas width="750" height="440" style="display:none;"></canvas>
     </div>
 
     <div class = "body picture">
       <div class="box-record">
-        <button type="button" class="btn btn-primary glyphicon glyphicon-chevron-left"></button>
-        <button type="button" class="btn btn-primary glyphicon glyphicon-chevron-right"></button>
+        <button type="button" class="btn btn-primary glyphicon glyphicon-chevron-left picture"></button>
+        <button type="button" class="btn btn-primary glyphicon glyphicon-chevron-right picture"></button>
       </div>
-      <canvas width="750" height="440" style="display:none;"></canvas>
-      <!--<img src="">-->
     </div>
 
+    <div class = "body video">
+      <div class="box-record">
+        <button type="button" class="btn btn-primary glyphicon glyphicon-chevron-left video"></button>
+        <button type="button" class="btn btn-primary glyphicon glyphicon-chevron-right video"></button>
+      </div>
+    </div>
 
     <!-- Modal -->
     <div class="modal fade" id="myModal" role="dialog">

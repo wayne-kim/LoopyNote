@@ -4,10 +4,14 @@ var app = electron.remote.app;
 
 const filePath = "./data"
 
-var video;
+var video, video2;
 var canvas;
-var ctx
-var localMediaStream = null;
+var ctx;
+
+var chunks = new Array();
+var downloadLink = document.createElement('a');
+var videoElement = document.createElement('video');
+var mediaRecorder;
 
 $(document).ready(function(){
 
@@ -38,19 +42,25 @@ $(document).ready(function(){
   });
 
   //녹화-재생
-  $(".glyphicon-play").on("click",function(){
-    $(".glyphicon-play").hide()
+  $(".glyphicon-play.start").on("click",function(){
+    $(".glyphicon-play.start").hide()
     $(".glyphicon-stop").show()
     $(".glyphicon-pause").show()
   })
   $(".glyphicon-stop").on("click",function(){
     $(".glyphicon-stop").hide()
     $(".glyphicon-pause").hide()
-    $(".glyphicon-play").show()
+    $(".glyphicon-play.resume").hide()
+    $(".glyphicon-play.start").show()
   })
   $(".glyphicon-pause").on("click",function(){
     $(".glyphicon-pause").hide()
-    $(".glyphicon-play").show()
+    $(".glyphicon-play.resume").show()
+    //$(".glyphicon-play").show()
+  })
+  $(".glyphicon-play.resume").on("click",function(){
+    $(".glyphicon-pause").show()
+    $(".glyphicon-play.resume").hide()
   })
   //소리
   $(".glyphicon-volume-up").on("click",function(){
@@ -62,53 +72,95 @@ $(document).ready(function(){
     $(".glyphicon-volume-up").show()
   })
   //아이콘 기본 세팅
-  $(".glyphicon-stop").hide()
+  $(".glyphicon-play.resume").hide()
   $(".glyphicon-pause").hide()
+  $(".glyphicon-stop").hide()
   $(".glyphicon-volume-off").hide()
 
-  //사진
-  $(".glyphicon-chevron-left").on("click",function(){
+  //이전 사진
+  $(".glyphicon-chevron-left.picture").on("click",function(){
     var imgs = $("img")
     var length = imgs.length
-    var node;
+    var i;
 
-    for(let i=0;i<length;i++){
+    for(i=0;i<length;i++){
       if($("img").eq(i).is(":visible")){
-          node =  i
-          console.log(node)
-          break
+        break
+      }
+    }
+    if(i === 0){
+      $(".glyphicon-chevron-left.picture").attr("disabled", true);
+    }else{
+      $(".glyphicon-chevron-right.picture").removeAttr("disabled", true);
+      imgs.hide()
+      imgs.eq(i-1).show()
+    }
+  })
+  //다음 사진
+  $(".glyphicon-chevron-right.picture").on("click",function(){
+    var imgs = $("img")
+    var length = imgs.length
+    var i;
+
+    for(i=0;i<length;i++){
+      if($("img").eq(i).is(":visible")){
+        break
       }
     }
 
-    if(node === 0){
-      $(".glyphicon-chevron-left").attr("disabled", true);
+    if(i === length-1){
+      $(".glyphicon-chevron-right.picture").attr("disabled", true);
     }else{
-      $(".glyphicon-chevron-right").removeAttr("disabled", true);
+      $(".glyphicon-chevron-left.picture").removeAttr("disabled", true);
       imgs.hide()
-      imgs.eq(node-1).show()
+      imgs.eq(i+1).show()
     }
   })
-  $(".glyphicon-chevron-right").on("click",function(){
-    var imgs = $("img")
-    var length = imgs.length
-    var node;
 
-    for(let i=0;i<length;i++){
-      if($("img").eq(i).is(":visible")){
-          node =  i
-          console.log(node)
-          break
+  //이전 영상
+  $(".glyphicon-chevron-left.video").on("click",function(){
+    var videos = $(".body.video video")
+    var length = videos.length
+    var i;
+
+    for(i=0;i<length;i++){
+      if($(".body.video video").eq(i).is(":visible")){
+        break
       }
     }
-
-    if(node === length-1){
-      $(".glyphicon-chevron-right").attr("disabled", true);
+    if(i === 0){
+      $(".glyphicon-chevron-left.video").attr("disabled", true);
     }else{
-      $(".glyphicon-chevron-left").removeAttr("disabled", true);
-      imgs.hide()
-      imgs.eq(node+1).show()
+      $(".glyphicon-chevron-right.video").removeAttr("disabled", true);
+      videos.hide()
+      videos.eq(i-1).show()
     }
   })
+  //다음 영상
+  $(".glyphicon-chevron-right.video").on("click",function(){
+    var videos = $(".body.video video")
+    var length = videos.length
+    var i;
+
+    for(i=0;i<length;i++){
+      if($(".body.video video").eq(i).is(":visible")){
+        break
+      }
+    }
+    if(i === length-1){
+      $(".glyphicon-chevron-right.video").attr("disabled", true);
+    }else{
+      $(".glyphicon-chevron-left.video").removeAttr("disabled", true);
+      videos.hide()
+      videos.eq(i+1).show()
+    }
+  })
+
+  //영상
+  $(".glyphicon-play.start").on("click", startRecording)
+  $(".glyphicon-stop").on("click", stopRecording)
+  $(".glyphicon-pause").on("click",pauseRecording)
+  $(".glyphicon-play.resume").on("click", resumeRecording)
 
   //save modal event init
   $("#save").on("click",function(){
@@ -157,19 +209,6 @@ $(document).ready(function(){
     return !!(navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
   }
 
-  //카메라 세팅
-  $(".glyphicon-camera").on("click",function(){
-    ctx.drawImage(video, 0, 0, 750, 440);
-    var img = document.createElement('img');
-    img.src = canvas.toDataURL('image/webp');
-    $(".body.picture").append(img)
-    $(".glyphicon-chevron-left").removeAttr("disabled", true);
-
-    $("img").hide()
-    $("img").eq($("img").length-1).show()
-    //document.querySelector('img').src = canvas.toDataURL('image/webp');
-  })
-
   //영상 세팅
   if (hasGetUserMedia()) {
     // Good to go!
@@ -180,12 +219,8 @@ $(document).ready(function(){
     video = document.querySelector('video');
     canvas = document.querySelector('canvas');
     ctx = canvas.getContext('2d');
-    localMediaStream = null;
 
-    // Not showing vendor prefixes.
     navigator.getUserMedia({
-      video: true,
-      audio: true,
       video: {
         mandatory: {
           minWidth: 700,
@@ -193,13 +228,62 @@ $(document).ready(function(){
           maxWidth: 750,
           maxHeight: 440
         }
-      }
+      },audio: true
     }, function(stream) {
-      video = document.querySelector('video');
+      //video = document.querySelector('video');
       video.src = window.URL.createObjectURL(stream);
-      localMediaStream = stream;
-      // Note: onloadedmetadata doesn't fire in Chrome when using it with getUserMedia.
-      // See crbug.com/110938.
+
+      mediaRecorder = new MediaRecorder(stream,{
+        audioBitsPerSecond : 128000,
+        videoBitsPerSecond : 2500000,
+        mimeType : 'video/webm'
+      });
+
+      mediaRecorder.ondataavailable = function(e) {
+        chunks.push(e.data);
+      };
+
+      mediaRecorder.onerror = function(e){
+        console.log('Error: ', e);
+      };
+
+      mediaRecorder.onstart = function(){
+        console.log('Started, state = ' + mediaRecorder.state);
+      };
+
+      mediaRecorder.onstop = function(){
+        console.log('Stopped, state = ' + mediaRecorder.state);
+        let blob = new Blob(chunks, {type: "video/webm"});
+        console.log(blob)
+        chunks = [];
+
+        let videoURL = window.URL.createObjectURL(blob);
+        downloadLink.href = videoURL;
+        videoElement.src = videoURL;
+        downloadLink.innerHTML = 'Download video file';
+
+        let rand = Math.floor((Math.random() * 10000000));
+        let name = "video_"+rand+".mp4" ;
+        downloadLink.setAttribute( "download", name);
+        downloadLink.setAttribute( "name", name);
+
+        //$(".body.picture").append(downloadLink)
+        let video = document.createElement('video');
+        video.src =  videoURL;
+        video.controls = true;
+        video.autoplay = false;
+        video.width = 750;
+        video.height = 440;
+
+        $(".body.video").append(video);
+        $(".body.video video").hide()
+        $(".body.video video").eq($(".body.video video").length-1).show()
+      };
+
+      mediaRecorder.onwarning = function(e){
+        console.log('Warning: ' + e);
+      };
+
       video.onloadedmetadata = function(e) {
         // Ready to go. Do some stuff.
       };
@@ -207,4 +291,41 @@ $(document).ready(function(){
   } else {
     alert('getUserMedia() is not supported in your browser');
   }
+
+  //카메라 세팅
+  $(".glyphicon-camera").on("click",getPicture)
+
+  function getPicture(){
+    ctx.drawImage(video, 0, 0, 750, 440);
+    var img = document.createElement('img');
+    img.src = canvas.toDataURL('image/webp');
+    $(".body.picture").append(img)
+    $(".glyphicon-chevron-left.picture").removeAttr("disabled", true);
+
+    $("img").hide()
+    $("img").eq($("img").length-1).show()
+    //document.querySelector('img').src = canvas.toDataURL('image/webp');
+  }
+
+  function startRecording() {
+    console.log("촬영시작");
+    mediaRecorder.start();
+  }
+  function stopRecording() {
+    console.log("촬영종료");
+    mediaRecorder.stop();
+  }
+  function pauseRecording(){
+    console.log("촬영 일시중지")
+    mediaRecorder.pause();
+  }
+  function resumeRecording(){
+    console.log("촬영 재개")
+    mediaRecorder.resume();
+  }
+
+  var onError = function(err) {
+    console.log('The following error occured: ' + err);
+  }
+
 })
