@@ -164,15 +164,34 @@ $(document).ready(function(){
 
   //save modal event init
   $("#save").on("click",function(){
-    var fileName = $("#fileName").val()
+    //text
+    var folderName = $("#fileName").val()
     $("#fileName").val('')
-    var text = $(".editable")
 
-    fs.writeFile(filePath+"/"+fileName, text.html(), (err) => {
+    fs.mkdirSync(filePath+"/"+folderName)
+
+    var text = $(".editable")
+    fs.writeFile(filePath+"/"+folderName+"/text", text.html(), (err) => {
       if (err) throw err;
       console.log('It\'s saved!');
+      $(".editable").html('')
     });
 
+    //img
+    let imgs = $("img")
+    let length = imgs.length
+    for(let i=length-1; i>=0; i--){
+      let data = imgs.eq(i).attr("src")
+      let buf = new Buffer(data);
+      imgs.eq(i).remove()
+
+      fs.writeFile(filePath+"/"+folderName+"/IMG"+i, buf , (err) => {
+        if (err) throw err;
+        console.log('It\'s saved!');
+      });
+    }
+
+    //video
   })
 
   //load modal event init
@@ -195,12 +214,35 @@ $(document).ready(function(){
     })
   })
   $(".list-group").on("click", ".list-group-item", function(event){
-    console.log($(event.target).text())
-    var contents = fs.readFileSync(filePath+"/"+$(event.target).text(), {
+    $(".editable").html('')
+    //text
+    let contents = fs.readFileSync(filePath+"/"+$(event.target).text()+"/text", {
       encoding : "utf-8",
       flag : "r"
     })
     $(".editable").append(contents)
+    //picture
+    let imgs = fs.readdir(filePath+"/"+$(event.target).text(), function(err, files){
+      if(err)throw err;
+      if(files.length>1){
+        for(let i=0; i<files.length; i++){
+          let temp = files[i];
+          let temp2 = temp.split("IMG")
+          if(temp2.length>1){
+            fs.readFile(filePath+"/"+$(event.target).text()+"/"+temp, (err,data)=>{
+              if(err) throw err;
+              let decodedImage = new Buffer(data, 'base64').toString('binary');
+              let img = document.createElement("IMG");
+              img.src = decodedImage;
+              $(".body.picture").append(img)
+            })
+          }
+        }
+      }
+    })
+    //video
+    
+
     $('#myModal2').modal('hide');
   })
 
