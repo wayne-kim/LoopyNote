@@ -3,56 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <title>loopy note</title>
-  <!--CSS-->
+
+  <!--CSS3 & bootstrap-->
   <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!--/CSS-->
-
-  <style>
-  body {
-    border : 1px solid #337ab7;
-  }
-  p{
-    margin : 0 0 0 0px;
-  }
-  div{
-    margig : 0 0 0 0px;
-  }
-  div.container-fluid{
-    padding: 0 0 0 0px;
-  }
-  div.panel.panel-primary{
-    margin: 0 0 0 0px;
-  }
-  .editable{
-    height: 475px;
-  }
-  .editable{
-    margin-top: 20px;
-    margin-left: 20px;
-    margin-right: 20px;
-    margin-bottom: 20px;
-  }
-  .body.record, .body.picture, .body.video {
-    height: 505px;
-  }
-  .box-record{
-    margin-top: 10px;
-    margin-left: 10px;
-    margin-right: 10px;
-    margin-bottom: 10px;
-  }
-  video, img{
-    margin-left: 25px;
-    border : 3px solid #337ab7;
-  }
-
-  </style>
+  <link rel="stylesheet" href="css/render.css">
 
   <!--라이브러리-->
   <script src="bower_components/jquery/dist/jquery.min.js" onload="window.$ = window.jQuery = module.exports;"></script>
   <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
   <script src="bower_components/holderjs/holder.js"></script>
-  <script src="js/mousetrap.min.js"></script>
+  <!-- <script src="js/mousetrap.min.js"></script> -->
 
   <!-- 에디터 -->
   <link rel="stylesheet" href="bower_components/medium-editor/dist/css/medium-editor.css">
@@ -60,15 +20,15 @@
   <script src="bower_components/medium-editor/dist/js/medium-editor.js"></script>
   <!--/에디터 -->
 
-  <script src="js/init.js"></script>
+  <!--render.js-->
+  <script src="js/render.js"></script>
+  <script src="js/camera.js"></script>
 
   <script type="text/javascript">
   var electron = null;
   $(document).ready(function(){
     var editor = new MediumEditor('.editable',{
       toolbar: {
-        /* These are the default options for the toolbar,
-        if nothing is passed this is what is used */
         allowMultiParagraphSelection: true,
         buttons:
           ['bold', 'underline', 'strikethrough','anchor','|',
@@ -83,7 +43,6 @@
         relativeContainer: null,
         standardizeSelectionStart: false,
         static: false,
-        /* options which only apply when static is true */
         align: 'center',
         sticky: false,
         updateOnEmptySelection: false
