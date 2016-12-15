@@ -41,7 +41,7 @@ $(document).ready(function(){
     $('#myModal').modal('show')
   });
 
-  //녹화-재생
+  //UI 녹화-재생
   $(".glyphicon-play.start").on("click",function(){
     $(".glyphicon-play.start").hide()
     $(".glyphicon-stop").show()
@@ -62,7 +62,7 @@ $(document).ready(function(){
     $(".glyphicon-pause").show()
     $(".glyphicon-play.resume").hide()
   })
-  //소리
+  //UI 소리
   $(".glyphicon-volume-up").on("click",function(){
     $(".glyphicon-volume-up").hide()
     $(".glyphicon-volume-off").show()
@@ -71,7 +71,8 @@ $(document).ready(function(){
     $(".glyphicon-volume-off").hide()
     $(".glyphicon-volume-up").show()
   })
-  //아이콘 기본 세팅
+
+  //UI 아이콘 기본 세팅
   $(".glyphicon-play.resume").hide()
   $(".glyphicon-pause").hide()
   $(".glyphicon-stop").hide()
@@ -117,7 +118,7 @@ $(document).ready(function(){
     }
   })
 
-  //이전 영상
+  //UI 이전 영상
   $(".glyphicon-chevron-left.video").on("click",function(){
     var videos = $(".body.video video")
     var length = videos.length
@@ -136,8 +137,7 @@ $(document).ready(function(){
       videos.eq(i-1).show()
     }
   })
-
-  //다음 영상
+  //UI 이전 영상
   $(".glyphicon-chevron-right.video").on("click",function(){
     var videos = $(".body.video video")
     var length = videos.length
